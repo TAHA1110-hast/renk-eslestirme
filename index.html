@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Renk Eşleştirme</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:12px;background:#17182e;color:white;font-family:Arial;text-align:center}
+button,select{padding:10px;border:0;border-radius:9px;background:#6557ed;color:white;font-weight:bold;margin:3px;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+#top{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+#board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;width:100%;max-width:520px;margin:20px auto}
+.block{width:100%;aspect-ratio:1;padding:0;border:4px solid #ffffff30;border-radius:12px}
+.selected{border:5px solid white;outline:3px solid #ffdf48;box-shadow:0 0 14px white;transform:scale(.94)}
+.matched{visibility:hidden;pointer-events:none}
+.overlay{display:none;position:fixed;inset:0;background:#000c;z-index:10;overflow:auto;padding:12px}
+.panel{max-width:520px;margin:20px auto;background:#252644;padding:16px;border-radius:15px}
+.slot{background:#363858;padding:12px;border-radius:10px;margin:10px 0;text-align:left}
+#message{min-height:25px;font-weight:bold}
+#levelUp{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:center;justify-content:center;font-size:35px;color:#ffe04b}
+label{display:block;margin:12px}
+</style>
+</head>
+<body>
+
+<h1>🌈 Renk Eşleştirme</h1>
+
+<div id="top">
+<span id="lives">❤️❤️❤️</span>
+<span>Puan: <b id="score">0</b></span>
+<span>Level: <b id="level">1</b></span>
+</div>
+
+<button id="restartBtn">Yeniden Başla</button>
+<button id="pauseBtn">Durdur</button>
+<button id="saveBtn">Kayıtlar</button>
+<button id="settingsBtn">Ayarlar</button>
+
+<p id="message"></p>
+<div id="board"></div>
+<div id="levelUp">🎉 LEVEL UP! 🎉</div>
+
+<div id="saveMenu" class="overlay">
+<div class="panel">
+<h2>💾 Kayıt Menüsü</h2>
+<p>10 ayrı kayıt slotu.</p>
+<div id="slots"></div>
+<button id="closeSave">Menüyü Kapat</button>
+</div>
+</div>
+
+<div id="settingsMenu" class="overlay">
+<div class="panel">
+<h2>Ayarlar</h2>
+
+<label>Dil:
+<select id="language">
+<option value="tr">Türkçe</option>
+<option value="en">English</option>
+</select>
+</label>
+
+<label>Zorluk:
+<select id="difficulty">
+<option value="easy">Kolay</option>
+<option value="medium" selected>Orta</option>
+<option value="hard">Zor</option>
+</select>
+</label>
+
+<label>Mesaj süresi:
+<select id="messageSeconds">
+<option value="1">1 saniye</option>
+<option value="2">2 saniye</option>
+<option value="3" selected>3 saniye</option>
+<option value="4">4 saniye</option>
+<option value="5">5 saniye</option>
+<option value="10">10 saniye</option>
+<option value="15">15 saniye</option>
+</select>
+</label>
+
+<label><input type="checkbox" id="soundToggle" checked> Ses efektleri</label>
+<label><input type="checkbox" id="fairToggle"> Adil mod</label>
+<label><input type="checkbox" id="competitionToggle"> Yarışma modu</label>
+
+<button id="introBtn">Nasıl Oynanır?</button>
+<button id="closeSettings">Kapat</button>
+</div>
+</div>
+
+<div id="introMenu" class="overlay">
+<div class="panel">
+<h2>Nasıl Oynanır?</h2>
+<p>Aynı renkteki iki bloğu seç.</p>
+<p>Her eşleşme 10 puan kazandırır.</p>
+<p>Yanlış eşleştirmede bir can kaybedersin.</p>
+<p>Her 500 puanda, canın 3'ten azsa 1 can kazanırsın.</p>
+<p>Seçili bloğa tekrar tıklarsan seçimini iptal edebilirsin.</p>
+<button id="skipIntro">Geç</button>
+<button id="closeIntro">Kapat</button>
+</div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const board=$("board");
+
+const colors=[
+"#ff3030","#20c75a","#3185ff","#ffda24",
+"#a34cff","#ff8b26","#ff65b7","#00cbd0",
+"#96502e","#91d900","#f02ac7","#008b83"
+];
+
+let score=0;
+let level=1;
+let lives=3;
+let nextLife=500;
+let first=null;
+let busy=false;
+let paused=false;
+let gameOver=false;
+let audio=null;
+let slots=Array(10).fill(null);
+let actionTimer=null;
+let levelTimer=null;
+let messageTimer=null;
+
+try{
+const data=JSON.parse(localStorage.getItem("colorGameSlots"));
+if(Array.isArray(data)&&data.length===10)slots=data;
+}catch(e){}
+
+function sound(freq=600,duration=.15){
+if(!$("soundToggle").checked)return;
+
+try{
+audio ||= new(window.AudioContext||window.webkitAudioContext)();
+if(audio.state==="suspended")audio.resume();
+
+const oscillator=audio.createOscillator();
+const gain=audio.createGain();
+
+oscillator.frequency.value=freq;
+gain.gain.value=.1;
+oscillator.connect(gain);
+gain.connect(audio.destination);
+oscillator.start();
+
+gain.gain.exponentialRampToValueAtTime(
+.001,audio.currentTime+duration
+);
+
+oscillator.stop(audio.currentTime+duration);
+}catch(e){}
+}
+
+function showMessage(text){
+clearTimeout(messageTimer);
+$("message").textContent=text;
+
+if(!text)return;
+
+const seconds=Number($("messageSeconds").value)||3;
+
+messageTimer=setTimeout(()=>{
+$("message").textContent="";
+},seconds*1000);
+}
+
+function update(){
+$("score").textContent=score;
+$("level").textContent=level;
+$("lives").textContent="❤️".repeat(Math.max(0,Math.min(3,lives)));
+}
+
+function startLevel(){
+clearTimeout(actionTimer);
+clearTimeout(levelTimer);
+
+board.replaceChildren();
+first=null;
+busy=false;
+gameOver=false;
+
+const pairs=Math.min(9+level,50);
+const deck=[];
+
+for(let i=0;i<pairs;i++){
+const color=colors[i%colors.length];
+deck.push(color,color);
+}
+
+for(let i=deck.length-1;i>0;i--){
+const j=Math.floor(Math.random()*(i+1));
+[deck[i],deck[j]]=[deck[j],deck[i]];
+}
+
+deck.forEach(color=>{
+const block=document.createElement("button");
+block.className="block";
+block.style.background=color;
+block.dataset.color=color;
+block.setAttribute("aria-label","Renk bloğu");
+block.onclick=()=>choose(block);
+board.appendChild(block);
+});
+
+update();
+showMessage("Aynı renkteki iki bloğu eşleştir!");
+}
+
+function choose(block){
+if(paused||gameOver||busy||block.classList.contains("matched")){
+return;
+}
+
+if(block===first){
+block.classList.remove("selected");
+first=null;
+showMessage("Seçim iptal edildi!");
+sound(350,.08);
+return;
+}
+
+sound(500,.08);
+block.classList.add("selected");
+
+if(first===null){
+first=block;
+showMessage("Şimdi ikinci bloğu seç!");
+return;
+}
+
+const a=first;
+const b=block;
+first=null;
+
+if(a.dataset.color===b.dataset.color){
+busy=true;
+score+=10;
+
+/* Her 500 puanda bir ödül eşiği.
+   Can 3 ise ekleme yapılmaz ama eşik ilerler. */
+while(score>=nextLife){
+if(lives<3){
+lives++;
+showMessage("+1 CAN! ❤️");
+sound(1000,.25);
+}
+nextLife+=500;
+}
+
+update();
+sound(850,.2);
+
+actionTimer=setTimeout(()=>{
+a.classList.remove("selected");
+b.classList.remove("selected");
+a.classList.add("matched");
+b.classList.add("matched");
+busy=false;
+
+const remaining=board.querySelectorAll(".block:not(.matched)").length;
+
+if(remaining===0){
+level++;
+
+if(level>=10000){
+level=10000;
+gameOver=true;
+showMessage("Tebrikler! Maksimum level!");
+update();
+return;
+}
+
+$("levelUp").style.display="flex";
+sound(1000,.3);
+
+levelTimer=setTimeout(()=>{
+$("levelUp").style.display="none";
+startLevel();
+},1200);
+}else if(score%500!==0){
+showMessage("+10 puan 🎉");
+}
+},300);
+
+}else{
+busy=true;
+
+/* Her yanlış eşleşmede kesin olarak bir can eksilir. */
+lives=Math.max(0,lives-1);
+update();
+sound(200,.2);
+
+actionTimer=setTimeout(()=>{
+a.classList.remove("selected");
+b.classList.remove("selected");
+busy=false;
+
+if(lives===0){
+gameOver=true;
+showMessage("Oyun bitti! Yeniden başla.");
+}else{
+showMessage("Eşleşmedi! 1 can kaybettin.");
+}
+},600);
+}
+}
+
+function restart(){
+clearTimeout(actionTimer);
+clearTimeout(levelTimer);
+clearTimeout(messageTimer);
+
+score=0;
+level=1;
+lives=3;
+nextLife=500;
+paused=false;
+gameOver=false;
+first=null;
+busy=false;
+
+$("pauseBtn").textContent="Durdur";
+$("levelUp").style.display="none";
+
+startLevel();
+}
+
+function pauseGame(){
+if(gameOver||busy)return;
+
+paused=!paused;
+$("pauseBtn").textContent=paused?"Devam Et":"Durdur";
+showMessage(paused?"Oyun duraklatıldı.":"Devam et!");
+}
+
+function persistSlots(){
+try{
+localStorage.setItem("colorGameSlots",JSON.stringify(slots));
+}catch(e){
+alert("Kayıt yapılamadı. Tarayıcı depolama alanını kontrol et.");
+}
+}
+
+function openSaves(){
+$("saveMenu").style.display="block";
+renderSlots();
+}
+
+function renderSlots(){
+const list=$("slots");
+list.replaceChildren();
+
+slots.forEach((data,index)=>{
+const box=document.createElement("div");
+box.className="slot";
+
+const title=document.createElement("div");
+title.textContent=data
+?`Slot ${index+1} — Level ${data.level}, Puan ${data.score}`
+:`Slot ${index+1} — Boş`;
+
+box.appendChild(title);
+
+const save=document.createElement("button");
+save.textContent=data?"Üzerine Kaydet":"Kaydet";
+
+save.onclick=()=>{
+if(slots[index]&&!confirm("Bu slottaki eski kaydın üzerine yazılsın mı?")){
+return;
+}
+
+slots[index]={
+score,
+level,
+lives,
+nextLife,
+matched:[...board.children].map(b=>b.classList.contains("matched")),
+colors:[...board.children].map(b=>b.dataset.color)
+};
+
+persistSlots();
+renderSlots();
+};
+
+box.appendChild(save);
+
+const load=document.createElement("button");
+load.textContent="Yükle";
+load.disabled=!data;
+load.onclick=()=>loadGame(index);
+box.appendChild(load);
+
+const del=document.createElement("button");
+del.textContent="Kaydı Sil";
+del.disabled=!data;
+
+del.onclick=()=>{
+if(!confirm("Yalnızca Slot "+(index+1)+" silinsin mi?"))return;
+slots[index]=null;
+persistSlots();
+renderSlots();
+};
+
+box.appendChild(del);
+list.appendChild(box);
+});
+}
+
+function loadGame(index){
+const data=slots[index];
+if(!data)return;
+
+clearTimeout(actionTimer);
+clearTimeout(levelTimer);
+clearTimeout(messageTimer);
+
+score=data.score;
+level=data.level;
+lives=data.lives;
+nextLife=data.nextLife;
+
+paused=false;
+gameOver=false;
+first=null;
+busy=false;
+
+$("levelUp").style.display="none";
+board.replaceChildren();
+
+data.colors.forEach((color,index)=>{
+const block=document.createElement("button");
+block.className="block";
+block.style.background=color;
+block.dataset.color=color;
+
+if(data.matched[index]){
+block.classList.add("matched");
+}
+
+block.onclick=()=>choose(block);
+board.appendChild(block);
+});
+
+update();
+$("pauseBtn").textContent="Durdur";
+showMessage("Kayıt yüklendi!");
+$("saveMenu").style.display="none";
+}
+
+$("restartBtn").onclick=restart;
+$("pauseBtn").onclick=pauseGame;
+$("saveBtn").onclick=openSaves;
+
+$("closeSave").onclick=()=>{
+$("saveMenu").style.display="none";
+};
+
+$("settingsBtn").onclick=()=>{
+$("settingsMenu").style.display="block";
+};
+
+$("closeSettings").onclick=()=>{
+$("settingsMenu").style.display="none";
+};
+
+$("introBtn").onclick=()=>{
+$("settingsMenu").style.display="none";
+$("introMenu").style.display="block";
+};
+
+$("skipIntro").onclick=()=>{
+$("introMenu").style.display="none";
+};
+
+$("closeIntro").onclick=()=>{
+$("introMenu").style.display="none";
+};
+
+$("language").onchange=()=>{
+showMessage($("language").value==="en"
+?"Match two blocks of the same color!"
+:"Aynı renkteki iki bloğu eşleştir!");
+};
+
+$("difficulty").onchange=()=>{
+showMessage("Zorluk: "+$("difficulty").selectedOptions[0].text);
+};
+
+$("messageSeconds").onchange=()=>{
+showMessage("Mesaj süresi: "+$("messageSeconds").value+" saniye");
+};
+
+startLevel();
+</script>
+</body>
+</html>
