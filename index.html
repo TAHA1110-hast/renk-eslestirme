@@ -386,26 +386,35 @@ function renderSlots() {
     const save = document.createElement("button");
     save.textContent = data ? "Üzerine Kaydet" : "Kaydet";
 
-    save.onclick = () => {
-      if (
-        slots[index] &&
-        !confirm("Bu slottaki eski kaydın üzerine yazılsın mı?")
-      ) return;
 
-      slots[index] = {
-        score,
-        level,
-        lives,
-        nextLife,
-        matched: [...board.children].map(b => b.classList.contains("matched")),
-        colors: [...board.children].map(b => b.dataset.color)
-      };
+const save = document.createElement("button");
+save.textContent = data ? "Üzerine Kaydet" : "Kaydet";
 
-      persistSlots();
-      renderSlots();
-    };
+save.onclick = () => {
+  if (gameOver) {
+    showMessage("Oyun bitti! Kayıt yapamazsın. 🔒");
+    return;
+  }
 
-    box.appendChild(save);
+  if (
+    slots[index] &&
+    !confirm("Bu slottaki eski kaydın üzerine yazılsın mı?")
+  ) return;
+
+  slots[index] = {
+    score,
+    level,
+    lives,
+    nextLife,
+    matched: [...board.children].map(b => b.classList.contains("matched")),
+    colors: [...board.children].map(b => b.dataset.color)
+  };
+
+  persistSlots();
+  renderSlots();
+};
+
+box.appendChild(save);
 
     const load = document.createElement("button");
     load.textContent = "Yükle";
