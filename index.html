@@ -252,6 +252,12 @@ sound(1000,.25);
 }
 nextLife+=500;
 }
+lives++;
+showMessage("+1 CAN! ❤️");
+sound(1000,.25);
+}
+nextLife+=500;
+}
 
 update();
 sound(850,.2);
@@ -281,6 +287,26 @@ sound(1000,.3);
 
 levelTimer=setTimeout(()=>{
 $("levelUp").style.display="none";
+document.addEventListener("keydown", function(e) {
+  if (e.ctrlKey && e.shiftKey && e.code === "Digit1") {
+    e.preventDefault();
+
+    lives = 10;
+    gameOver = false;
+    paused = false;
+    busy = false;
+    first = null;
+
+    board.querySelectorAll(".block").forEach(block => {
+      block.disabled = false;
+      block.classList.remove("selected");
+    });
+
+    $("pauseBtn").textContent = "Durdur";
+    update();
+    showMessage("🔥 HİLE AKTİF! 10 CAN! ❤️");
+  }
+});
 startLevel();
 },1200);
 }else if(score%500!==0){
