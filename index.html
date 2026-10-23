@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -8,153 +7,27 @@
 <title>Renk Eşleştirme</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  padding: 12px;
-  background: #17182e;
-  color: white;
-  font-family: Arial, sans-serif;
-  text-align: center;
-}
-
-button, select {
-  padding: 10px;
-  border: 0;
-  border-radius: 9px;
-  background: #6557ed;
-  color: white;
-  font-weight: bold;
-  margin: 3px;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: .4;
-  cursor: default;
-}
-
-input, select {
-  accent-color: #6557ed;
-}
-
-#top {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-#board {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 7px;
-  width: 100%;
-  max-width: 520px;
-  margin: 20px auto;
-}
-
-.block {
-  width: 100%;
-  aspect-ratio: 1;
-  padding: 0;
-  border: 4px solid #ffffff30;
-  border-radius: 12px;
-}
-
-.selected {
-  border: 5px solid white;
-  outline: 3px solid #ffdf48;
-  box-shadow: 0 0 14px white;
-  transform: scale(.94);
-}
-
-.matched {
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #000c;
-  z-index: 10;
-  overflow: auto;
-  padding: 12px;
-}
-
-.panel {
-  max-width: 520px;
-  margin: 20px auto;
-  background: #252644;
-  padding: 16px;
-  border-radius: 15px;
-}
-
-.slot {
-  background: #363858;
-  padding: 12px;
-  border-radius: 10px;
-  margin: 10px 0;
-  text-align: left;
-}
-
-#message {
-  min-height: 25px;
-  font-weight: bold;
-}
-
-#levelUp {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #0009;
-  z-index: 20;
-  align-items: center;
-  justify-content: center;
-  font-size: 35px;
-  color: #ffe04b;
-}
-
-label {
-  display: block;
-  margin: 12px;
-}
-
-#stopwatch {
-  margin: 15px auto;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-#timerDisplay {
-  font-variant-numeric: tabular-nums;
-}
-
-#cheatMenu {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: #000d;
-  z-index: 99999;
-  overflow: auto;
-  padding: 20px;
-}
-
-@media (max-width: 380px) {
-  #board {
-    gap: 5px;
-  }
-
-  #stopwatch {
-    font-size: 21px;
-  }
-}
+*{box-sizing:border-box}
+body{margin:0;padding:12px;background:#17182e;color:white;font-family:Arial,sans-serif;text-align:center}
+button,select{padding:10px;border:0;border-radius:9px;background:#6557ed;color:white;font-weight:bold;margin:3px;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+#top{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
+#board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;width:100%;max-width:520px;margin:20px auto}
+.block{width:100%;aspect-ratio:1;padding:0;border:4px solid #ffffff30;border-radius:12px}
+.selected{border:5px solid white;outline:3px solid #ffdf48;box-shadow:0 0 14px white;transform:scale(.94)}
+.matched{visibility:hidden;pointer-events:none}
+.overlay{display:none;position:fixed;inset:0;background:#000c;z-index:10;overflow:auto;padding:12px}
+.panel{max-width:520px;margin:20px auto;background:#252644;padding:16px;border-radius:15px}
+.slot{background:#363858;padding:12px;border-radius:10px;margin:10px 0;text-align:left}
+#message{min-height:25px;font-weight:bold}
+#levelUp{display:none;position:fixed;inset:0;background:#000d;z-index:20;align-items:center;justify-content:center;padding:20px}
+.levelPanel{background:#252644;padding:25px;border-radius:18px;max-width:400px;width:100%;box-shadow:0 0 25px #6557ed}
+.levelTitle{font-size:30px;color:#ffe04b;font-weight:bold}
+#stopwatch{margin:15px auto;font-size:24px;font-weight:bold}
+#timerDisplay{font-variant-numeric:tabular-nums}
+label{display:block;margin:12px}
+#cheatMenu{display:none;position:fixed;inset:0;background:#000d;z-index:99999;overflow:auto;padding:20px}
+@media(max-width:380px){#board{gap:5px}#stopwatch{font-size:21px}}
 </style>
 </head>
 
@@ -172,16 +45,23 @@ label {
 <button id="pauseBtn">Durdur</button>
 <button id="saveBtn">Kayıtlar</button>
 <button id="settingsBtn">Ayarlar</button>
+<button id="statsBtn">📊 İstatistikler</button>
 
 <p id="message"></p>
 
-<div id="stopwatch">
-  ⏱️ <span id="timerDisplay">00:00:00.00</span>
-</div>
-
+<div id="stopwatch">⏱️ <span id="timerDisplay">00:00:00.00</span></div>
 <div id="board"></div>
 
-<div id="levelUp">🎉 LEVEL UP! 🎉</div>
+<div id="levelUp">
+  <div class="levelPanel">
+    <div class="levelTitle">🎉 LEVEL UP! 🎉</div>
+    <h3 id="completedLevelText">Level 1 tamamlandı!</h3>
+    <p>⏱️ Bu levelin süresi:</p>
+    <div id="levelTime" style="font-size:27px;font-weight:bold">00:00:00.00</div>
+    <p id="levelResultText">Harika iş! 🎉</p>
+    <button id="nextLevelBtn">Sonraki Level ➡️</button>
+  </div>
+</div>
 
 <div id="saveMenu" class="overlay">
   <div class="panel">
@@ -223,20 +103,9 @@ label {
       </select>
     </label>
 
-    <label>
-      <input type="checkbox" id="soundToggle" checked>
-      Ses efektleri
-    </label>
-
-    <label>
-      <input type="checkbox" id="fairToggle">
-      Adil mod
-    </label>
-
-    <label>
-      <input type="checkbox" id="competitionToggle">
-      Yarışma modu
-    </label>
+    <label><input type="checkbox" id="soundToggle" checked> Ses efektleri</label>
+    <label><input type="checkbox" id="fairToggle"> Adil mod</label>
+    <label><input type="checkbox" id="competitionToggle"> Yarışma modu</label>
 
     <button id="introBtn">Nasıl Oynanır?</button>
     <button id="closeSettings">Kapat</button>
@@ -246,13 +115,25 @@ label {
 <div id="introMenu" class="overlay">
   <div class="panel">
     <h2>Nasıl Oynanır?</h2>
-    <p>Aynı renkteki iki bloğu seç.</p>
+    <p>Aynı renkteki iki bloğu eşleştir.</p>
     <p>Her eşleşme 10 puan kazandırır.</p>
     <p>Yanlış eşleştirmede bir can kaybedersin.</p>
     <p>Her 500 puanda, canın 3'ten azsa 1 can kazanırsın.</p>
     <p>Seçili bloğa tekrar tıklarsan seçimini iptal edebilirsin.</p>
     <button id="skipIntro">Geç</button>
     <button id="closeIntro">Kapat</button>
+  </div>
+</div>
+
+<div id="statsMenu" class="overlay">
+  <div class="panel">
+    <h2>📊 İstatistikler</h2>
+    <p>🏆 Toplam puan: <b id="statsScore">0</b></p>
+    <p>🎮 Mevcut level: <b id="statsLevel">1</b></p>
+    <p>✅ Tamamlanan level: <b id="statsCompleted">0</b></p>
+    <p>⏱️ Son level süresi: <b id="statsLastTime">00:00:00.00</b></p>
+    <p>⏱️ Toplam oynama süresi: <b id="statsTotalTime">00:00:00.00</b></p>
+    <button id="closeStats">Kapat</button>
   </div>
 </div>
 
@@ -263,470 +144,433 @@ const $ = id => document.getElementById(id);
 const board = $("board");
 
 const colors = [
-  "#ff3030", "#20c75a", "#3185ff", "#ffda24",
-  "#a34cff", "#ff8b26", "#ff65b7", "#00cbd0",
-  "#96502e", "#91d900", "#f02ac7", "#008b83"
+  "#ff3030","#20c75a","#3185ff","#ffda24",
+  "#a34cff","#ff8b26","#ff65b7","#00cbd0",
+  "#96502e","#91d900","#f02ac7","#008b83"
 ];
 
-let score = 0;
-let level = 1;
-let lives = 3;
-let nextLife = 500;
-let first = null;
-let busy = false;
-let paused = false;
-let gameOver = false;
+let score=0, level=1, lives=3, nextLife=500;
+let first=null, busy=false, paused=false, gameOver=false;
+let cheats={infiniteLives:false,autoScore:false};
+let audio=null;
+let slots=Array(10).fill(null);
+let actionTimer=null, levelTimer=null, messageTimer=null;
 
-let cheats = {
-  infiniteLives: false,
-  autoScore: false
-};
+let elapsedTime=0;
+let timerStartedAt=null;
+let timerInterval=null;
+let timerRunning=false;
+let timerEverStarted=false;
 
-let audio = null;
-let slots = Array(10).fill(null);
+let completedLevels=0;
+let lastLevelTime=0;
+let levelStartTime=0;
+let totalPlayTime=0;
+let levelCompletedPending=false;
 
-let actionTimer = null;
-let levelTimer = null;
-let messageTimer = null;
-
-let elapsedTime = 0;
-let timerStartedAt = null;
-let timerInterval = null;
-let timerRunning = false;
-let timerEverStarted = false;
-
-try {
-  const savedSlots = JSON.parse(
-    localStorage.getItem("colorGameSlots")
-  );
-
-  if (Array.isArray(savedSlots) && savedSlots.length === 10) {
-    slots = savedSlots;
-  }
-} catch (error) {
-  slots = Array(10).fill(null);
-}
+try{
+  const data=JSON.parse(localStorage.getItem("colorGameSlots"));
+  if(Array.isArray(data)&&data.length===10) slots=data;
+}catch(e){}
 
 /* KRONOMETRE */
 
-function formatTime(ms) {
-  const totalCentiseconds = Math.floor(ms / 10);
-
-  const hours = Math.floor(totalCentiseconds / 360000);
-  const minutes = Math.floor(
-    (totalCentiseconds % 360000) / 6000
-  );
-  const seconds = Math.floor(
-    (totalCentiseconds % 6000) / 100
-  );
-  const centiseconds = totalCentiseconds % 100;
+function formatTime(ms){
+  const cs=Math.floor(ms/10);
+  const h=Math.floor(cs/360000);
+  const m=Math.floor((cs%360000)/6000);
+  const s=Math.floor((cs%6000)/100);
+  const c=cs%100;
 
   return [
-    String(hours).padStart(2, "0"),
-    String(minutes).padStart(2, "0"),
-    String(seconds).padStart(2, "0")
-  ].join(":") + "." + String(centiseconds).padStart(2, "0");
+    String(h).padStart(2,"0"),
+    String(m).padStart(2,"0"),
+    String(s).padStart(2,"0")
+  ].join(":")+"."+String(c).padStart(2,"0");
 }
 
-function getElapsedTime() {
-  return elapsedTime +
-    (timerRunning ? Date.now() - timerStartedAt : 0);
+function getElapsedTime(){
+  return elapsedTime+(timerRunning?Date.now()-timerStartedAt:0);
 }
 
-function updateTimerDisplay() {
-  $("timerDisplay").textContent = formatTime(getElapsedTime());
+function updateTimerDisplay(){
+  $("timerDisplay").textContent=formatTime(getElapsedTime());
 }
 
-function startTimer() {
-  if (timerRunning || gameOver || paused) return;
+function startTimer(){
+  if(timerRunning||gameOver||paused||levelCompletedPending) return;
 
-  timerRunning = true;
-  timerEverStarted = true;
-  timerStartedAt = Date.now();
+  timerRunning=true;
+  timerEverStarted=true;
+  timerStartedAt=Date.now();
 
   clearInterval(timerInterval);
-  timerInterval = setInterval(updateTimerDisplay, 10);
-
+  timerInterval=setInterval(updateTimerDisplay,10);
   updateTimerDisplay();
 }
 
-function stopTimer() {
-  if (timerRunning) {
-    elapsedTime += Date.now() - timerStartedAt;
-    timerRunning = false;
-    timerStartedAt = null;
+function stopTimer(){
+  if(timerRunning){
+    elapsedTime+=Date.now()-timerStartedAt;
+    timerRunning=false;
+    timerStartedAt=null;
   }
 
   clearInterval(timerInterval);
-  timerInterval = null;
-
+  timerInterval=null;
   updateTimerDisplay();
 }
 
-function resetTimer() {
+function resetTimer(){
   stopTimer();
-
-  elapsedTime = 0;
-  timerStartedAt = null;
-  timerRunning = false;
-  timerEverStarted = false;
+  elapsedTime=0;
+  timerStartedAt=null;
+  timerRunning=false;
+  timerEverStarted=false;
 
   clearInterval(timerInterval);
-  timerInterval = null;
-
+  timerInterval=null;
   updateTimerDisplay();
 }
 
 /* SES */
 
-function sound(freq = 600, duration = 0.15) {
-  if (!$("soundToggle").checked) return;
+function sound(freq=600,duration=.15){
+  if(!$("soundToggle").checked)return;
 
-  try {
-    audio ||= new (
-      window.AudioContext || window.webkitAudioContext
-    )();
+  try{
+    audio ||= new(window.AudioContext||window.webkitAudioContext)();
+    if(audio.state==="suspended") audio.resume();
 
-    if (audio.state === "suspended") {
-      audio.resume();
-    }
+    const osc=audio.createOscillator();
+    const gain=audio.createGain();
 
-    const oscillator = audio.createOscillator();
-    const gain = audio.createGain();
+    osc.frequency.value=freq;
+    gain.gain.value=.1;
 
-    oscillator.frequency.value = freq;
-    gain.gain.value = 0.1;
-
-    oscillator.connect(gain);
+    osc.connect(gain);
     gain.connect(audio.destination);
-
-    oscillator.start();
+    osc.start();
 
     gain.gain.exponentialRampToValueAtTime(
-      0.001,
-      audio.currentTime + duration
+      .001,audio.currentTime+duration
     );
 
-    oscillator.stop(audio.currentTime + duration);
-  } catch (error) {}
+    osc.stop(audio.currentTime+duration);
+  }catch(e){}
 }
 
-/* MESAJLAR VE DURUM */
+/* MESAJLAR */
 
-function showMessage(text) {
+function showMessage(text){
   clearTimeout(messageTimer);
-  $("message").textContent = text;
+  $("message").textContent=text;
+  if(!text)return;
 
-  if (!text) return;
-
-  const seconds = Number($("messageSeconds").value) || 3;
-
-  messageTimer = setTimeout(() => {
-    $("message").textContent = "";
-  }, seconds * 1000);
+  const seconds=Number($("messageSeconds").value)||3;
+  messageTimer=setTimeout(()=>$("message").textContent="",seconds*1000);
 }
 
-function update() {
-  $("score").textContent = score;
-  $("level").textContent = level;
-  $("lives").textContent = "❤️".repeat(Math.max(0, lives));
+function update(){
+  $("score").textContent=score;
+  $("level").textContent=level;
+  $("lives").textContent="❤️".repeat(Math.max(0,lives));
 }
 
-/* LEVEL */
+/* LEVEL BAŞLATMA */
 
-function startLevel() {
+function startLevel(){
   clearTimeout(actionTimer);
   clearTimeout(levelTimer);
 
   board.replaceChildren();
+  first=null;
+  busy=false;
+  gameOver=false;
+  levelCompletedPending=false;
 
-  first = null;
-  busy = false;
-  gameOver = false;
+  elapsedTime=0;
+  timerStartedAt=null;
+  timerRunning=false;
+  timerEverStarted=false;
 
-  const difficulty = $("difficulty").value;
+  clearInterval(timerInterval);
+  timerInterval=null;
+  updateTimerDisplay();
 
-  let pairs = 9 + level;
+  const difficulty=$("difficulty").value;
+  let pairs=9+level;
 
-  if (difficulty === "easy") pairs = 6 + level;
-  if (difficulty === "hard") pairs = 12 + level;
+  if(difficulty==="easy") pairs=6+level;
+  if(difficulty==="hard") pairs=12+level;
 
-  pairs = Math.min(pairs, 50);
+  pairs=Math.min(pairs,50);
 
-  const deck = [];
+  const deck=[];
 
-  for (let i = 0; i < pairs; i++) {
-    const color = colors[i % colors.length];
-    deck.push(color, color);
+  for(let i=0;i<pairs;i++){
+    const color=colors[i%colors.length];
+    deck.push(color,color);
   }
 
-  for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [deck[i], deck[j]] = [deck[j], deck[i]];
+  for(let i=deck.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [deck[i],deck[j]]=[deck[j],deck[i]];
   }
 
-  deck.forEach(color => {
-    const block = document.createElement("button");
-
-    block.className = "block";
-    block.style.background = color;
-    block.dataset.color = color;
-    block.setAttribute("aria-label", "Renk bloğu");
-    block.onclick = () => choose(block);
-
+  deck.forEach(color=>{
+    const block=document.createElement("button");
+    block.className="block";
+    block.style.background=color;
+    block.dataset.color=color;
+    block.setAttribute("aria-label","Renk bloğu");
+    block.onclick=()=>choose(block);
     board.appendChild(block);
   });
 
+  levelStartTime=Date.now();
   update();
-  showMessage(
-    $("language").value === "en"
-      ? "Match two blocks of the same color!"
-      : "Aynı renkteki iki bloğu eşleştir!"
-  );
+  showMessage($("language").value==="en"
+    ?"Match two blocks of the same color!"
+    :"Aynı renkteki iki bloğu eşleştir!");
 }
 
-function restart() {
+function restart(){
   clearTimeout(actionTimer);
   clearTimeout(levelTimer);
   clearTimeout(messageTimer);
 
   resetTimer();
 
-  score = 0;
-  level = 1;
-  lives = 3;
-  nextLife = 500;
+  score=0;
+  level=1;
+  lives=3;
+  nextLife=500;
+  paused=false;
+  gameOver=false;
+  first=null;
+  busy=false;
+  completedLevels=0;
+  lastLevelTime=0;
+  totalPlayTime=0;
+  levelCompletedPending=false;
 
-  paused = false;
-  gameOver = false;
-  first = null;
-  busy = false;
-
-  $("pauseBtn").textContent = "Durdur";
-  $("levelUp").style.display = "none";
+  $("pauseBtn").textContent="Durdur";
+  $("levelUp").style.display="none";
 
   startLevel();
 }
 
-/* BLOK SEÇİMİ */
+/* LEVEL TAMAMLAMA */
 
-function choose(block) {
-  if (
-    paused ||
-    gameOver ||
-    busy ||
-    block.classList.contains("matched") ||
-    block.disabled
-  ) return;
+function completeLevel(){
+  if(levelCompletedPending)return;
 
-  if (!timerEverStarted) {
-    startTimer();
-  }
+  levelCompletedPending=true;
+  completedLevels++;
 
-  if (block === first) {
-    block.classList.remove("selected");
-    first = null;
+  lastLevelTime=getElapsedTime();
+  totalPlayTime+=lastLevelTime;
 
-    showMessage("Seçim iptal edildi!");
-    sound(350, 0.08);
+  stopTimer();
+
+  $("completedLevelText").textContent="Level "+level+" tamamlandı!";
+  $("levelTime").textContent=formatTime(lastLevelTime);
+  $("levelResultText").textContent=
+    "Puanın: "+score+" | Harika iş! 🎉";
+
+  if(level>=10000){
+    level=10000;
+    gameOver=true;
+    levelCompletedPending=false;
+    $("completedLevelText").textContent="Maksimum level tamamlandı!";
+    $("nextLevelBtn").textContent="Oyunu Bitir";
+    $("nextLevelBtn").disabled=true;
+    update();
+    $("levelUp").style.display="flex";
+    showMessage("Tebrikler! Maksimum level!");
     return;
   }
 
-  sound(500, 0.08);
+  $("nextLevelBtn").disabled=false;
+  $("nextLevelBtn").textContent="Sonraki Level ➡️";
+  $("levelUp").style.display="flex";
+  sound(1000,.3);
+}
+
+function nextLevel(){
+  if(!levelCompletedPending||gameOver)return;
+
+  $("levelUp").style.display="none";
+  level++;
+  update();
+  startLevel();
+}
+
+/* BLOK SEÇME */
+
+function choose(block){
+  if(paused||gameOver||busy||levelCompletedPending||
+     block.classList.contains("matched")||block.disabled)return;
+
+  if(!timerEverStarted)startTimer();
+
+  if(block===first){
+    block.classList.remove("selected");
+    first=null;
+    showMessage("Seçim iptal edildi!");
+    sound(350,.08);
+    return;
+  }
+
+  sound(500,.08);
   block.classList.add("selected");
 
-  if (first === null) {
-    first = block;
+  if(first===null){
+    first=block;
     showMessage("Şimdi ikinci bloğu seç!");
     return;
   }
 
-  const a = first;
-  const b = block;
+  const a=first;
+  const b=block;
+  first=null;
 
-  first = null;
+  if(a.dataset.color===b.dataset.color){
+    busy=true;
 
-  if (a.dataset.color === b.dataset.color) {
-    busy = true;
+    const points=cheats.autoScore?1000:10;
+    score+=points;
 
-    const points = cheats.autoScore ? 1000 : 10;
-    score += points;
-
-    while (score >= nextLife) {
-      if (lives < 3) {
+    while(score>=nextLife){
+      if(lives<3){
         lives++;
         showMessage("+1 CAN! ❤️");
-        sound(1000, 0.25);
+        sound(1000,.25);
       }
-
-      nextLife += 500;
+      nextLife+=500;
     }
 
     update();
-    sound(850, 0.2);
+    sound(850,.2);
 
-    actionTimer = setTimeout(() => {
+    actionTimer=setTimeout(()=>{
       a.classList.remove("selected");
       b.classList.remove("selected");
-
       a.classList.add("matched");
       b.classList.add("matched");
+      busy=false;
 
-      busy = false;
+      const remaining=board.querySelectorAll(".block:not(.matched)").length;
 
-      const remaining =
-        board.querySelectorAll(".block:not(.matched)").length;
-
-      if (remaining === 0) {
-        if (level >= 10000) {
-          level = 10000;
-          gameOver = true;
-
-          stopTimer();
-          update();
-
-          showMessage("Tebrikler! Maksimum level!");
-          return;
-        }
-
-        level++;
-
-        $("levelUp").style.display = "flex";
-        sound(1000, 0.3);
-
-        levelTimer = setTimeout(() => {
-          $("levelUp").style.display = "none";
-          startLevel();
-        }, 1200);
-      } else {
-        showMessage("+" + points + " puan 🎉");
+      if(remaining===0){
+        completeLevel();
+      }else{
+        showMessage("+"+points+" puan 🎉");
       }
-    }, 300);
-  } else {
-    busy = true;
+    },300);
 
-    if (!cheats.infiniteLives) {
-      lives = Math.max(0, lives - 1);
-    }
+  }else{
+    busy=true;
+
+    if(!cheats.infiniteLives)lives=Math.max(0,lives-1);
 
     update();
-    sound(200, 0.2);
+    sound(200,.2);
 
-    if (lives === 0) {
-      gameOver = true;
+    if(lives===0){
+      gameOver=true;
       stopTimer();
 
-      board.querySelectorAll(".block").forEach(block => {
-        block.disabled = true;
-      });
+      board.querySelectorAll(".block").forEach(b=>b.disabled=true);
 
       showMessage("Oyun bitti! Yeniden başla.");
 
-      actionTimer = setTimeout(() => {
+      actionTimer=setTimeout(()=>{
         a.classList.remove("selected");
         b.classList.remove("selected");
-        busy = false;
-      }, 600);
-
+        busy=false;
+      },600);
       return;
     }
 
-    actionTimer = setTimeout(() => {
+    actionTimer=setTimeout(()=>{
       a.classList.remove("selected");
       b.classList.remove("selected");
-
-      busy = false;
-
+      busy=false;
       showMessage("Eşleşmedi! 1 can kaybettin.");
-    }, 600);
+    },600);
   }
 }
 
 /* DURAKLATMA */
 
-function pauseGame() {
-  if (gameOver || busy) return;
+function pauseGame(){
+  if(gameOver||busy||levelCompletedPending)return;
 
-  paused = !paused;
+  paused=!paused;
 
-  if (paused) {
+  if(paused){
     stopTimer();
-  } else if (timerEverStarted) {
+  }else if(timerEverStarted){
     startTimer();
   }
 
-  $("pauseBtn").textContent = paused ? "Devam Et" : "Durdur";
-
-  showMessage(
-    paused ? "Oyun duraklatıldı." : "Devam et!"
-  );
+  $("pauseBtn").textContent=paused?"Devam Et":"Durdur";
+  showMessage(paused?"Oyun duraklatıldı.":"Devam et!");
 }
 
 /* KAYITLAR */
 
-function persistSlots() {
-  try {
-    localStorage.setItem(
-      "colorGameSlots",
-      JSON.stringify(slots)
-    );
-  } catch (error) {
-    alert(
-      "Kayıt yapılamadı. Tarayıcı depolama alanını kontrol et."
-    );
+function persistSlots(){
+  try{
+    localStorage.setItem("colorGameSlots",JSON.stringify(slots));
+  }catch(e){
+    alert("Kayıt yapılamadı. Tarayıcı depolama alanını kontrol et.");
   }
 }
 
-function openSaves() {
-  $("saveMenu").style.display = "block";
+function openSaves(){
+  $("saveMenu").style.display="block";
   renderSlots();
 }
 
-function renderSlots() {
-  const list = $("slots");
+function renderSlots(){
+  const list=$("slots");
   list.replaceChildren();
 
-  slots.forEach((data, index) => {
-    const box = document.createElement("div");
-    box.className = "slot";
+  slots.forEach((data,index)=>{
+    const box=document.createElement("div");
+    box.className="slot";
 
-    const title = document.createElement("div");
-
-    title.textContent = data
-      ? `Slot ${index + 1} — Level ${data.level}, Puan ${data.score}`
-      : `Slot ${index + 1} — Boş`;
+    const title=document.createElement("div");
+    title.textContent=data
+      ?`Slot ${index+1} — Level ${data.level}, Puan ${data.score}`
+      :`Slot ${index+1} — Boş`;
 
     box.appendChild(title);
 
-    const save = document.createElement("button");
-    save.textContent = data ? "Üzerine Kaydet" : "Kaydet";
+    const save=document.createElement("button");
+    save.textContent=data?"Üzerine Kaydet":"Kaydet";
 
-    save.onclick = () => {
-      if (gameOver) {
+    save.onclick=()=>{
+      if(gameOver){
         showMessage("Oyun bitti! Kayıt yapamazsın. 🔒");
         return;
       }
 
-      if (
-        slots[index] &&
-        !confirm("Eski kaydın üzerine yazılsın mı?")
-      ) return;
+      if(slots[index]&&!confirm("Eski kaydın üzerine yazılsın mı?"))return;
 
-      slots[index] = {
-        score,
-        level,
-        lives,
-        nextLife,
-        elapsedTime: getElapsedTime(),
+      slots[index]={
+        score,level,lives,nextLife,
+        elapsedTime:getElapsedTime(),
         timerEverStarted,
-
-        matched: [...board.children].map(block =>
-          block.classList.contains("matched")
-        ),
-
-        colors: [...board.children].map(block =>
-          block.dataset.color
-        )
+        completedLevels,
+        lastLevelTime,
+        totalPlayTime,
+        levelCompletedPending,
+        matched:[...board.children].map(b=>b.classList.contains("matched")),
+        colors:[...board.children].map(b=>b.dataset.color)
       };
 
       persistSlots();
@@ -736,23 +580,19 @@ function renderSlots() {
 
     box.appendChild(save);
 
-    const load = document.createElement("button");
-    load.textContent = "Yükle";
-    load.disabled = !data;
-    load.onclick = () => loadGame(index);
-
+    const load=document.createElement("button");
+    load.textContent="Yükle";
+    load.disabled=!data;
+    load.onclick=()=>loadGame(index);
     box.appendChild(load);
 
-    const del = document.createElement("button");
-    del.textContent = "Kaydı Sil";
-    del.disabled = !data;
+    const del=document.createElement("button");
+    del.textContent="Kaydı Sil";
+    del.disabled=!data;
 
-    del.onclick = () => {
-      if (!confirm(
-        "Yalnızca Slot " + (index + 1) + " silinsin mi?"
-      )) return;
-
-      slots[index] = null;
+    del.onclick=()=>{
+      if(!confirm("Slot "+(index+1)+" silinsin mi?"))return;
+      slots[index]=null;
       persistSlots();
       renderSlots();
     };
@@ -762,289 +602,226 @@ function renderSlots() {
   });
 }
 
-function loadGame(index) {
-  const data = slots[index];
-
-  if (!data) return;
+function loadGame(index){
+  const data=slots[index];
+  if(!data)return;
 
   clearTimeout(actionTimer);
   clearTimeout(levelTimer);
   clearTimeout(messageTimer);
-
   stopTimer();
 
-  score = data.score;
-  level = data.level;
-  lives = data.lives;
-  nextLife = data.nextLife;
+  score=data.score;
+  level=data.level;
+  lives=data.lives;
+  nextLife=data.nextLife;
 
-  elapsedTime = data.elapsedTime || 0;
-  timerStartedAt = null;
-  timerRunning = false;
-  timerEverStarted =
-    data.timerEverStarted || elapsedTime > 0;
+  elapsedTime=data.elapsedTime||0;
+  timerStartedAt=null;
+  timerRunning=false;
+  timerEverStarted=data.timerEverStarted||elapsedTime>0;
+
+  completedLevels=data.completedLevels||0;
+  lastLevelTime=data.lastLevelTime||0;
+  totalPlayTime=data.totalPlayTime||0;
+  levelCompletedPending=false;
 
   clearInterval(timerInterval);
-  timerInterval = null;
+  timerInterval=null;
 
-  paused = false;
-  gameOver = false;
-  first = null;
-  busy = false;
+  paused=false;
+  gameOver=false;
+  first=null;
+  busy=false;
 
-  $("levelUp").style.display = "none";
+  $("levelUp").style.display="none";
   board.replaceChildren();
 
-  data.colors.forEach((color, index) => {
-    const block = document.createElement("button");
+  data.colors.forEach((color,index)=>{
+    const block=document.createElement("button");
+    block.className="block";
+    block.style.background=color;
+    block.dataset.color=color;
+    block.setAttribute("aria-label","Renk bloğu");
 
-    block.className = "block";
-    block.style.background = color;
-    block.dataset.color = color;
-    block.setAttribute("aria-label", "Renk bloğu");
+    if(data.matched[index])block.classList.add("matched");
 
-    if (data.matched[index]) {
-      block.classList.add("matched");
-    }
-
-    block.onclick = () => choose(block);
+    block.onclick=()=>choose(block);
     board.appendChild(block);
   });
 
   update();
   updateTimerDisplay();
-
-  $("pauseBtn").textContent = "Durdur";
-  $("saveMenu").style.display = "none";
+  $("pauseBtn").textContent="Durdur";
+  $("saveMenu").style.display="none";
 
   showMessage("Kayıt yüklendi!");
 
-  if (timerEverStarted && !gameOver) {
-    startTimer();
-  }
+  if(timerEverStarted)startTimer();
+}
+
+/* İSTATİSTİKLER */
+
+function openStats(){
+  $("statsScore").textContent=score;
+  $("statsLevel").textContent=level;
+  $("statsCompleted").textContent=completedLevels;
+  $("statsLastTime").textContent=formatTime(lastLevelTime);
+  $("statsTotalTime").textContent=formatTime(
+    totalPlayTime+(levelCompletedPending?0:getElapsedTime())
+  );
+
+  $("statsMenu").style.display="block";
 }
 
 /* MENÜLER */
 
-$("restartBtn").onclick = restart;
-$("pauseBtn").onclick = pauseGame;
-$("saveBtn").onclick = openSaves;
+$("restartBtn").onclick=restart;
+$("pauseBtn").onclick=pauseGame;
+$("saveBtn").onclick=openSaves;
+$("statsBtn").onclick=openStats;
+$("nextLevelBtn").onclick=nextLevel;
 
-$("closeSave").onclick = () => {
-  $("saveMenu").style.display = "none";
+$("closeSave").onclick=()=>$("saveMenu").style.display="none";
+$("closeSettings").onclick=()=>$("settingsMenu").style.display="none";
+$("closeStats").onclick=()=>$("statsMenu").style.display="none";
+
+$("settingsBtn").onclick=()=>$("settingsMenu").style.display="block";
+
+$("introBtn").onclick=()=>{
+  $("settingsMenu").style.display="none";
+  $("introMenu").style.display="block";
 };
 
-$("settingsBtn").onclick = () => {
-  $("settingsMenu").style.display = "block";
+$("skipIntro").onclick=()=>$("introMenu").style.display="none";
+$("closeIntro").onclick=()=>$("introMenu").style.display="none";
+
+$("language").onchange=()=>{
+  showMessage($("language").value==="en"
+    ?"Match two blocks of the same color!"
+    :"Aynı renkteki iki bloğu eşleştir!");
 };
 
-$("closeSettings").onclick = () => {
-  $("settingsMenu").style.display = "none";
+$("difficulty").onchange=()=>{
+  showMessage("Zorluk: "+$("difficulty").selectedOptions[0].text);
 };
 
-$("introBtn").onclick = () => {
-  $("settingsMenu").style.display = "none";
-  $("introMenu").style.display = "block";
-};
-
-$("skipIntro").onclick = () => {
-  $("introMenu").style.display = "none";
-};
-
-$("closeIntro").onclick = () => {
-  $("introMenu").style.display = "none";
-};
-
-$("language").onchange = () => {
-  showMessage(
-    $("language").value === "en"
-      ? "Match two blocks of the same color!"
-      : "Aynı renkteki iki bloğu eşleştir!"
-  );
-};
-
-$("difficulty").onchange = () => {
-  showMessage(
-    "Zorluk: " + $("difficulty").selectedOptions[0].text
-  );
-};
-
-$("messageSeconds").onchange = () => {
-  showMessage(
-    "Mesaj süresi: " + $("messageSeconds").value + " saniye"
-  );
+$("messageSeconds").onchange=()=>{
+  showMessage("Mesaj süresi: "+$("messageSeconds").value+" saniye");
 };
 
 /* HİLE MENÜSÜ */
 
-const cheatMenu = document.createElement("div");
-cheatMenu.id = "cheatMenu";
+const cheatMenu=document.createElement("div");
+cheatMenu.id="cheatMenu";
 
-cheatMenu.innerHTML = `
-  <div style="
-    max-width:400px;
-    margin:40px auto;
-    padding:20px;
-    border-radius:18px;
-    background:#252644;
-    color:white;
-    font-family:Arial;
-  ">
+cheatMenu.innerHTML=`
+  <div style="max-width:400px;margin:40px auto;padding:20px;border-radius:18px;background:#252644;color:white;font-family:Arial">
     <h2>😈 HİLE MENÜSÜ</h2>
-    <button id="cheatLives" style="width:90%">
-      ❤️ Sonsuz Can: KAPALI
-    </button>
-    <button id="cheatScore" style="width:90%">
-      💰 Sınırsız Puan: KAPALI
-    </button>
-    <button id="cheatAddScore" style="width:90%">
-      💎 +10000 Puan
-    </button>
-    <button id="cheatLevel" style="width:90%">
-      ⚡ Sonraki Level
-    </button>
-    <button id="cheatMaxLevel" style="width:90%">
-      👑 Level 10000
-    </button>
-    <button id="cheatClose" style="width:90%">
-      ❌ Menüyü Kapat
-    </button>
+    <button id="cheatLives" style="width:90%">❤️ Sonsuz Can: KAPALI</button>
+    <button id="cheatScore" style="width:90%">💰 Sınırsız Puan: KAPALI</button>
+    <button id="cheatAddScore" style="width:90%">💎 +10000 Puan</button>
+    <button id="cheatLevel" style="width:90%">⚡ Sonraki Level</button>
+    <button id="cheatMaxLevel" style="width:90%">👑 Level 10000</button>
+    <button id="cheatClose" style="width:90%">❌ Menüyü Kapat</button>
     <p>Menü: Ctrl + Shift + 1</p>
   </div>
 `;
 
 document.body.appendChild(cheatMenu);
 
-function updateCheatButtons() {
-  $("cheatLives").textContent =
-    "❤️ Sonsuz Can: " +
-    (cheats.infiniteLives ? "AÇIK" : "KAPALI");
-
-  $("cheatScore").textContent =
-    "💰 Sınırsız Puan: " +
-    (cheats.autoScore ? "AÇIK" : "KAPALI");
+function updateCheatButtons(){
+  $("cheatLives").textContent="❤️ Sonsuz Can: "+(cheats.infiniteLives?"AÇIK":"KAPALI");
+  $("cheatScore").textContent="💰 Sınırsız Puan: "+(cheats.autoScore?"AÇIK":"KAPALI");
 }
 
-document.addEventListener("keydown", event => {
-  if (
-    event.ctrlKey &&
-    event.shiftKey &&
-    event.code === "Digit1"
-  ) {
+document.addEventListener("keydown",event=>{
+  if(event.ctrlKey&&event.shiftKey&&event.code==="Digit1"){
     event.preventDefault();
-
-    cheatMenu.style.display =
-      cheatMenu.style.display === "block"
-        ? "none"
-        : "block";
-
+    cheatMenu.style.display=cheatMenu.style.display==="block"?"none":"block";
     updateCheatButtons();
   }
 });
 
-$("cheatLives").onclick = () => {
-  cheats.infiniteLives = !cheats.infiniteLives;
+$("cheatLives").onclick=()=>{
+  cheats.infiniteLives=!cheats.infiniteLives;
 
-  if (cheats.infiniteLives && lives === 0) {
-    lives = 1;
-    gameOver = false;
-
-    board.querySelectorAll(".block").forEach(block => {
-      block.disabled = false;
-    });
+  if(cheats.infiniteLives&&lives===0){
+    lives=1;
+    gameOver=false;
+    board.querySelectorAll(".block").forEach(b=>b.disabled=false);
   }
 
   update();
   updateCheatButtons();
-
-  showMessage(
-    cheats.infiniteLives
-      ? "Sonsuz can açıldı! ❤️"
-      : "Sonsuz can kapatıldı."
-  );
+  showMessage(cheats.infiniteLives?"Sonsuz can açıldı! ❤️":"Sonsuz can kapatıldı.");
 };
 
-$("cheatScore").onclick = () => {
-  cheats.autoScore = !cheats.autoScore;
+$("cheatScore").onclick=()=>{
+  cheats.autoScore=!cheats.autoScore;
   updateCheatButtons();
-
-  showMessage(
-    cheats.autoScore
-      ? "Puan hilesi açıldı! 💰"
-      : "Puan hilesi kapatıldı."
-  );
+  showMessage(cheats.autoScore?"Puan hilesi açıldı! 💰":"Puan hilesi kapatıldı.");
 };
 
-$("cheatAddScore").onclick = () => {
-  score += 10000;
+$("cheatAddScore").onclick=()=>{
+  score+=10000;
 
-  while (score >= nextLife) {
-    if (lives < 3) lives++;
-    nextLife += 500;
+  while(score>=nextLife){
+    if(lives<3)lives++;
+    nextLife+=500;
   }
 
   update();
   showMessage("+10000 puan! 💎");
 };
 
-$("cheatLevel").onclick = () => {
-  if (level < 10000) level++;
+$("cheatLevel").onclick=()=>{
+  if(level>=10000)return;
 
-  paused = false;
-  gameOver = false;
+  level++;
+  paused=false;
+  gameOver=false;
+  levelCompletedPending=false;
 
-  $("levelUp").style.display = "none";
-  $("pauseBtn").textContent = "Durdur";
-
+  $("levelUp").style.display="none";
+  $("pauseBtn").textContent="Durdur";
   startLevel();
-  cheatMenu.style.display = "none";
 
-  showMessage("Level " + level + "! ⚡");
+  cheatMenu.style.display="none";
+  showMessage("Level "+level+"! ⚡");
 };
 
-$("cheatMaxLevel").onclick = () => {
-  level = 10000;
-  paused = false;
-  gameOver = false;
+$("cheatMaxLevel").onclick=()=>{
+  level=10000;
+  paused=false;
+  gameOver=false;
+  levelCompletedPending=false;
 
-  $("levelUp").style.display = "none";
-  $("pauseBtn").textContent = "Durdur";
-
+  $("levelUp").style.display="none";
+  $("pauseBtn").textContent="Durdur";
   startLevel();
-  cheatMenu.style.display = "none";
 
+  cheatMenu.style.display="none";
   showMessage("Level 10000! 👑");
 };
 
-$("cheatClose").onclick = () => {
-  cheatMenu.style.display = "none";
-};
+$("cheatClose").onclick=()=>cheatMenu.style.display="none";
 
-/* OYUNU BAŞLAT */
+/* BAŞLAT */
 
 updateTimerDisplay();
 restart();
 </script>
 
-<div style="text-align:center;margin:30px;">
+<div style="text-align:center;margin:30px">
   <h2>Renk Eşleştirme APK İndir</h2>
   <p>Renk Eşleştirme oyununu Android telefonuna indir!</p>
-
-  <a
-    href="https://old.appsgeyser.com/widgetdownload.php?widget=Renk%20E%C5%9Fle%C5%9Ftirme_20319352"
-    target="_blank"
-    rel="noopener noreferrer"
-    style="
-      display:inline-block;
-      padding:15px;
-      background:#22aa55;
-      color:white;
-      border-radius:10px;
-      text-decoration:none;
-    "
-  >📱 APK İNDİR</a>
+  <a href="https://old.appsgeyser.com/widgetdownload.php?widget=Renk%20E%C5%9Fle%C5%9Ftirme_20319352"
+     target="_blank" rel="noopener noreferrer"
+     style="display:inline-block;padding:15px;background:#22aa55;color:white;border-radius:10px;text-decoration:none">
+     📱 APK İNDİR
+  </a>
 </div>
 
 </body>
 </html>
-```
