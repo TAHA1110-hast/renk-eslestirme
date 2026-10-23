@@ -124,6 +124,11 @@ let first = null;
 let busy = false;
 let paused = false;
 let gameOver = false;
+// HİLE SİSTEMİ
+let cheats = {
+  infiniteLives: false,
+  autoScore: false
+};
 let audio = null;
 let slots = Array(10).fill(null);
 let actionTimer = null;
@@ -264,8 +269,7 @@ function choose(block) {
 
   if (a.dataset.color === b.dataset.color) {
     busy = true;
-    score += 10;
-
+  score += cheats.autoScore ? 1000 : 10;
     // Her 500 puanda bir can ver.
     // Puanla kazanılan can en fazla 3 olabilir.
     while (score >= nextLife) {
@@ -314,7 +318,9 @@ function choose(block) {
 
   } else {
     busy = true;
-    lives = Math.max(0, lives - 1);
+if (!cheats.infiniteLives) {
+  lives = Math.max(0, lives - 1);
+}
     update();
     sound(200, .2);
 
@@ -520,6 +526,177 @@ $("messageSeconds").onchange = () => {
   showMessage("Mesaj süresi: " + $("messageSeconds").value + " saniye");
 };
 // Oyun açılır açılmaz kutuları oluştur.
+  // ===== HİLE MENÜSÜ =====
+
+const cheatMenu = document.createElement("div");
+
+cheatMenu.id = "cheatMenu";
+
+cheatMenu.style.cssText = `
+  display:none;
+  position:fixed;
+  inset:0;
+  background:#000d;
+  z-index:99999;
+  overflow:auto;
+  padding:20px;
+`;
+
+cheatMenu.innerHTML = `
+  <div style="
+    max-width:400px;
+    margin:40px auto;
+    padding:20px;
+    border-radius:18px;
+    background:#252644;
+    color:white;
+    font-family:Arial;
+  ">
+    <h2>😈 HİLE MENÜSÜ</h2>
+
+    <button id="cheatLives" style="width:90%">
+      ❤️ Sonsuz Can: KAPALI
+    </button>
+
+    <button id="cheatScore" style="width:90%">
+      💰 Sınırsız Puan: KAPALI
+    </button>
+
+    <button id="cheatAddScore" style="width:90%">
+      💎 +10000 Puan
+    </button>
+
+    <button id="cheatLevel" style="width:90%">
+      ⚡ Sonraki Level
+    </button>
+
+    <button id="cheatMaxLevel" style="width:90%">
+      👑 Level 10000
+    </button>
+
+    <button id="cheatClose" style="width:90%">
+      ❌ Menüyü Kapat
+    </button>
+
+    <p>Menü: Ctrl + Shift + 1</p>
+  </div>
+`;
+
+document.body.appendChild(cheatMenu);
+
+function updateCheatButtons() {
+  $("cheatLives").textContent =
+    "❤️ Sonsuz Can: " +
+    (cheats.infiniteLives ? "AÇIK" : "KAPALI");
+
+  $("cheatScore").textContent =
+    "💰 Sınırsız Puan: " +
+    (cheats.autoScore ? "AÇIK" : "KAPALI");
+}
+
+document.addEventListener("keydown", event => {
+  if (
+    event.ctrlKey &&
+    event.shiftKey &&
+    event.code === "Digit1"
+  ) {
+    event.preventDefault();
+
+    cheatMenu.style.display =
+      cheatMenu.style.display === "block"
+        ? "none"
+        : "block";
+
+    updateCheatButtons();
+  }
+});
+
+$("cheatLives").onclick = () => {
+  cheats.infiniteLives = !cheats.infiniteLives;
+
+  if (cheats.infiniteLives && lives === 0) {
+    lives = 1;
+    gameOver = false;
+
+    board.querySelectorAll(".block").forEach(block => {
+      block.disabled = false;
+    });
+  }
+
+  update();
+  updateCheatButtons();
+
+  showMessage(
+    cheats.infiniteLives
+      ? "Sonsuz can açıldı! ❤️"
+      : "Sonsuz can kapatıldı."
+  );
+};
+
+$("cheatScore").onclick = () => {
+  cheats.autoScore = !cheats.autoScore;
+
+  updateCheatButtons();
+
+  showMessage(
+    cheats.autoScore
+      ? "Puan hilesi açıldı! 💰"
+      : "Puan hilesi kapatıldı."
+  );
+};
+
+$("cheatAddScore").onclick = () => {
+  score += 10000;
+
+  while (score >= nextLife) {
+    if (lives < 3) lives++;
+    nextLife += 500;
+  }
+
+  update();
+
+  showMessage("+10000 puan! 💎");
+};
+
+$("cheatLevel").onclick = () => {
+  level++;
+
+  if (level > 10000) level = 10000;
+
+  paused = false;
+  gameOver = false;
+
+  $("levelUp").style.display = "none";
+  $("pauseBtn").textContent = "Durdur";
+
+  startLevel();
+
+  cheatMenu.style.display = "none";
+
+  showMessage("Level " + level + "! ⚡");
+};
+
+$("cheatMaxLevel").onclick = () => {
+  level = 10000;
+
+  paused = false;
+  gameOver = false;
+
+  $("levelUp").style.display = "none";
+  $("pauseBtn").textContent = "Durdur";
+
+  startLevel();
+
+  cheatMenu.style.display = "none";
+
+  showMessage("Level 10000! 👑");
+};
+
+$("cheatClose").onclick = () => {
+  cheatMenu.style.display = "none";
+};
+
+// ===== HİLE MENÜSÜ SONU =====
 restart();
 </script>
 
