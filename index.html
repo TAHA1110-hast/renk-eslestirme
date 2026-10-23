@@ -139,9 +139,7 @@ function sound(freq = 600, duration = .15) {
   if (!$("soundToggle").checked) return;
 
   try {
-    audio ||= new (window.AudioContext || window.webkitAudioContext)();
-    if (audio.state === "suspended") audio.resume();
-
+audio ||= new (window.AudioContext || window.webkitAudioContext)();
     const oscillator = audio.createOscillator();
     const gain = audio.createGain();
 
@@ -196,7 +194,7 @@ function startLevel() {
   }
 
   for (let i = deck.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+const j = Math.floor(Math.random() * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]];
   }
 
