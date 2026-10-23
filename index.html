@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -7,21 +8,129 @@
 <title>Renk Eşleştirme</title>
 
 <style>
-*{box-sizing:border-box}
-body{margin:0;padding:12px;background:#17182e;color:white;font-family:Arial;text-align:center}
-button,select{padding:10px;border:0;border-radius:9px;background:#6557ed;color:white;font-weight:bold;margin:3px;cursor:pointer}
-button:disabled{opacity:.4;cursor:default}
-#top{display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap}
-#board{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;width:100%;max-width:520px;margin:20px auto}
-.block{width:100%;aspect-ratio:1;padding:0;border:4px solid #ffffff30;border-radius:12px}
-.selected{border:5px solid white;outline:3px solid #ffdf48;box-shadow:0 0 14px white;transform:scale(.94)}
-.matched{visibility:hidden;pointer-events:none}
-.overlay{display:none;position:fixed;inset:0;background:#000c;z-index:10;overflow:auto;padding:12px}
-.panel{max-width:520px;margin:20px auto;background:#252644;padding:16px;border-radius:15px}
-.slot{background:#363858;padding:12px;border-radius:10px;margin:10px 0;text-align:left}
-#message{min-height:25px;font-weight:bold}
-#levelUp{display:none;position:fixed;inset:0;background:#0009;z-index:20;align-items:center;justify-content:center;font-size:35px;color:#ffe04b}
-label{display:block;margin:12px}
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 12px;
+  background: #17182e;
+  color: white;
+  font-family: Arial;
+  text-align: center;
+}
+
+button, select {
+  padding: 10px;
+  border: 0;
+  border-radius: 9px;
+  background: #6557ed;
+  color: white;
+  font-weight: bold;
+  margin: 3px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: .4;
+  cursor: default;
+}
+
+#top {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+#board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+  width: 100%;
+  max-width: 520px;
+  margin: 20px auto;
+}
+
+.block {
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 4px solid #ffffff30;
+  border-radius: 12px;
+}
+
+.selected {
+  border: 5px solid white;
+  outline: 3px solid #ffdf48;
+  box-shadow: 0 0 14px white;
+  transform: scale(.94);
+}
+
+.matched {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #000c;
+  z-index: 10;
+  overflow: auto;
+  padding: 12px;
+}
+
+.panel {
+  max-width: 520px;
+  margin: 20px auto;
+  background: #252644;
+  padding: 16px;
+  border-radius: 15px;
+}
+
+.slot {
+  background: #363858;
+  padding: 12px;
+  border-radius: 10px;
+  margin: 10px 0;
+  text-align: left;
+}
+
+#message {
+  min-height: 25px;
+  font-weight: bold;
+}
+
+#levelUp {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #0009;
+  z-index: 20;
+  align-items: center;
+  justify-content: center;
+  font-size: 35px;
+  color: #ffe04b;
+}
+
+label {
+  display: block;
+  margin: 12px;
+}
+
+#stopwatch {
+  margin: 15px auto;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+#timerDisplay {
+  font-variant-numeric: tabular-nums;
+}
 </style>
 </head>
 
@@ -30,9 +139,9 @@ label{display:block;margin:12px}
 <h1>🌈 Renk Eşleştirme</h1>
 
 <div id="top">
-<span id="lives">❤️❤️❤️</span>
-<span>Puan: <b id="score">0</b></span>
-<span>Level: <b id="level">1</b></span>
+  <span id="lives">❤️❤️❤️</span>
+  <span>Puan: <b id="score">0</b></span>
+  <span>Level: <b id="level">1</b></span>
 </div>
 
 <button id="restartBtn">Yeniden Başla</button>
@@ -41,69 +150,87 @@ label{display:block;margin:12px}
 <button id="settingsBtn">Ayarlar</button>
 
 <p id="message"></p>
+
 <div id="board"></div>
+
+<div id="stopwatch">
+  ⏱️ <span id="timerDisplay">00:00:00</span>
+  <button id="timerToggle">Durdur</button>
+</div>
+
 <div id="levelUp">🎉 LEVEL UP! 🎉</div>
 
 <div id="saveMenu" class="overlay">
-<div class="panel">
-<h2>💾 Kayıt Menüsü</h2>
-<p>10 ayrı kayıt slotu.</p>
-<div id="slots"></div>
-<button id="closeSave">Menüyü Kapat</button>
-</div>
+  <div class="panel">
+    <h2>💾 Kayıt Menüsü</h2>
+    <p>10 ayrı kayıt slotu.</p>
+    <div id="slots"></div>
+    <button id="closeSave">Menüyü Kapat</button>
+  </div>
 </div>
 
 <div id="settingsMenu" class="overlay">
-<div class="panel">
-<h2>Ayarlar</h2>
+  <div class="panel">
+    <h2>Ayarlar</h2>
 
-<label>Dil:
-<select id="language">
-<option value="tr">Türkçe</option>
-<option value="en">English</option>
-</select>
-</label>
+    <label>Dil:
+      <select id="language">
+        <option value="tr">Türkçe</option>
+        <option value="en">English</option>
+      </select>
+    </label>
 
-<label>Zorluk:
-<select id="difficulty">
-<option value="easy">Kolay</option>
-<option value="medium" selected>Orta</option>
-<option value="hard">Zor</option>
-</select>
-</label>
+    <label>Zorluk:
+      <select id="difficulty">
+        <option value="easy">Kolay</option>
+        <option value="medium" selected>Orta</option>
+        <option value="hard">Zor</option>
+      </select>
+    </label>
 
-<label>Mesaj süresi:
-<select id="messageSeconds">
-<option value="1">1 saniye</option>
-<option value="2">2 saniye</option>
-<option value="3" selected>3 saniye</option>
-<option value="4">4 saniye</option>
-<option value="5">5 saniye</option>
-<option value="10">10 saniye</option>
-<option value="15">15 saniye</option>
-</select>
-</label>
+    <label>Mesaj süresi:
+      <select id="messageSeconds">
+        <option value="1">1 saniye</option>
+        <option value="2">2 saniye</option>
+        <option value="3" selected>3 saniye</option>
+        <option value="4">4 saniye</option>
+        <option value="5">5 saniye</option>
+        <option value="10">10 saniye</option>
+        <option value="15">15 saniye</option>
+      </select>
+    </label>
 
-<label><input type="checkbox" id="soundToggle" checked> Ses efektleri</label>
-<label><input type="checkbox" id="fairToggle"> Adil mod</label>
-<label><input type="checkbox" id="competitionToggle"> Yarışma modu</label>
+    <label>
+      <input type="checkbox" id="soundToggle" checked>
+      Ses efektleri
+    </label>
 
-<button id="introBtn">Nasıl Oynanır?</button>
-<button id="closeSettings">Kapat</button>
-</div>
+    <label>
+      <input type="checkbox" id="fairToggle">
+      Adil mod
+    </label>
+
+    <label>
+      <input type="checkbox" id="competitionToggle">
+      Yarışma modu
+    </label>
+
+    <button id="introBtn">Nasıl Oynanır?</button>
+    <button id="closeSettings">Kapat</button>
+  </div>
 </div>
 
 <div id="introMenu" class="overlay">
-<div class="panel">
-<h2>Nasıl Oynanır?</h2>
-<p>Aynı renkteki iki bloğu seç.</p>
-<p>Her eşleşme 10 puan kazandırır.</p>
-<p>Yanlış eşleştirmede bir can kaybedersin.</p>
-<p>Her 500 puanda, canın 3'ten azsa 1 can kazanırsın.</p>
-<p>Seçili bloğa tekrar tıklarsan seçimini iptal edebilirsin.</p>
-<button id="skipIntro">Geç</button>
-<button id="closeIntro">Kapat</button>
-</div>
+  <div class="panel">
+    <h2>Nasıl Oynanır?</h2>
+    <p>Aynı renkteki iki bloğu seç.</p>
+    <p>Her eşleşme 10 puan kazandırır.</p>
+    <p>Yanlış eşleştirmede bir can kaybedersin.</p>
+    <p>Her 500 puanda, canın 3'ten azsa 1 can kazanırsın.</p>
+    <p>Seçili bloğa tekrar tıklarsan seçimini iptal edebilirsin.</p>
+    <button id="skipIntro">Geç</button>
+    <button id="closeIntro">Kapat</button>
+  </div>
 </div>
 
 <script>
@@ -111,9 +238,9 @@ const $ = id => document.getElementById(id);
 const board = $("board");
 
 const colors = [
-"#ff3030","#20c75a","#3185ff","#ffda24",
-"#a34cff","#ff8b26","#ff65b7","#00cbd0",
-"#96502e","#91d900","#f02ac7","#008b83"
+  "#ff3030", "#20c75a", "#3185ff", "#ffda24",
+  "#a34cff", "#ff8b26", "#ff65b7", "#00cbd0",
+  "#96502e", "#91d900", "#f02ac7", "#008b83"
 ];
 
 let score = 0;
@@ -124,42 +251,129 @@ let first = null;
 let busy = false;
 let paused = false;
 let gameOver = false;
+
 // HİLE SİSTEMİ
 let cheats = {
   infiniteLives: false,
   autoScore: false
 };
+
 let audio = null;
 let slots = Array(10).fill(null);
 let actionTimer = null;
 let levelTimer = null;
 let messageTimer = null;
 
+// KRONOMETRE
+let elapsedTime = 0;
+let timerStartedAt = null;
+let timerInterval = null;
+let timerRunning = false;
+let timerEverStarted = false;
+
 try {
   const data = JSON.parse(localStorage.getItem("colorGameSlots"));
-  if (Array.isArray(data) && data.length === 10) slots = data;
-} catch(e) {}
+
+  if (Array.isArray(data) && data.length === 10) {
+    slots = data;
+  }
+} catch (e) {}
+
+function formatTime(ms) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+
+  return [hours, minutes, seconds]
+    .map(n => String(n).padStart(2, "0"))
+    .join(":");
+}
+
+function getElapsedTime() {
+  return elapsedTime +
+    (timerRunning ? Date.now() - timerStartedAt : 0);
+}
+
+function updateTimerDisplay() {
+  $("timerDisplay").textContent = formatTime(getElapsedTime());
+}
+
+function startTimer() {
+  if (timerRunning || gameOver || paused) return;
+
+  timerRunning = true;
+  timerEverStarted = true;
+  timerStartedAt = Date.now();
+
+  clearInterval(timerInterval);
+  timerInterval = setInterval(updateTimerDisplay, 250);
+
+  $("timerToggle").textContent = "Durdur";
+  updateTimerDisplay();
+}
+
+function stopTimer() {
+  if (timerRunning) {
+    elapsedTime += Date.now() - timerStartedAt;
+    timerRunning = false;
+    timerStartedAt = null;
+  }
+
+  clearInterval(timerInterval);
+  timerInterval = null;
+
+  $("timerToggle").textContent = "Devam Et";
+  updateTimerDisplay();
+}
+
+function resetTimer() {
+  stopTimer();
+
+  elapsedTime = 0;
+  timerStartedAt = null;
+  timerRunning = false;
+  timerEverStarted = false;
+
+  clearInterval(timerInterval);
+  timerInterval = null;
+
+  $("timerToggle").textContent = "Durdur";
+  updateTimerDisplay();
+}
+
+$("timerToggle").onclick = () => {
+  if (timerRunning) {
+    stopTimer();
+  } else if (timerEverStarted) {
+    startTimer();
+  }
+};
 
 function sound(freq = 600, duration = .15) {
   if (!$("soundToggle").checked) return;
 
   try {
-audio ||= new (window.AudioContext || window.webkitAudioContext)();
+    audio ||= new (window.AudioContext || window.webkitAudioContext)();
+
     const oscillator = audio.createOscillator();
     const gain = audio.createGain();
 
     oscillator.frequency.value = freq;
     gain.gain.value = .1;
+
     oscillator.connect(gain);
     gain.connect(audio.destination);
+
     oscillator.start();
 
     gain.gain.exponentialRampToValueAtTime(
-      .001, audio.currentTime + duration
+      .001,
+      audio.currentTime + duration
     );
 
     oscillator.stop(audio.currentTime + duration);
-  } catch(e) {}
+  } catch (e) {}
 }
 
 function showMessage(text) {
@@ -186,6 +400,7 @@ function startLevel() {
   clearTimeout(levelTimer);
 
   board.replaceChildren();
+
   first = null;
   busy = false;
   gameOver = false;
@@ -199,17 +414,19 @@ function startLevel() {
   }
 
   for (let i = deck.length - 1; i > 0; i--) {
-const j = Math.floor(Math.random() * (i + 1));
+    const j = Math.floor(Math.random() * (i + 1));
     [deck[i], deck[j]] = [deck[j], deck[i]];
   }
 
   deck.forEach(color => {
     const block = document.createElement("button");
+
     block.className = "block";
     block.style.background = color;
     block.dataset.color = color;
     block.setAttribute("aria-label", "Renk bloğu");
     block.onclick = () => choose(block);
+
     board.appendChild(block);
   });
 
@@ -222,10 +439,13 @@ function restart() {
   clearTimeout(levelTimer);
   clearTimeout(messageTimer);
 
+  resetTimer();
+
   score = 0;
   level = 1;
   lives = 3;
   nextLife = 500;
+
   paused = false;
   gameOver = false;
   first = null;
@@ -246,9 +466,15 @@ function choose(block) {
     block.disabled
   ) return;
 
+  // İlk geçerli blok tıklamasında kronometre başlar.
+  if (!timerEverStarted) {
+    startTimer();
+  }
+
   if (block === first) {
     block.classList.remove("selected");
     first = null;
+
     showMessage("Seçim iptal edildi!");
     sound(350, .08);
     return;
@@ -265,19 +491,22 @@ function choose(block) {
 
   const a = first;
   const b = block;
+
   first = null;
 
   if (a.dataset.color === b.dataset.color) {
     busy = true;
-  score += cheats.autoScore ? 1000 : 10;
+
+    score += cheats.autoScore ? 1000 : 10;
+
     // Her 500 puanda bir can ver.
-    // Puanla kazanılan can en fazla 3 olabilir.
     while (score >= nextLife) {
       if (lives < 3) {
         lives++;
         showMessage("+1 CAN! ❤️");
         sound(1000, .25);
       }
+
       nextLife += 500;
     }
 
@@ -287,11 +516,14 @@ function choose(block) {
     actionTimer = setTimeout(() => {
       a.classList.remove("selected");
       b.classList.remove("selected");
+
       a.classList.add("matched");
       b.classList.add("matched");
+
       busy = false;
 
-      const remaining = board.querySelectorAll(".block:not(.matched)").length;
+      const remaining =
+        board.querySelectorAll(".block:not(.matched)").length;
 
       if (remaining === 0) {
         level++;
@@ -299,6 +531,9 @@ function choose(block) {
         if (level >= 10000) {
           level = 10000;
           gameOver = true;
+
+          stopTimer();
+
           showMessage("Tebrikler! Maksimum level!");
           update();
           return;
@@ -318,14 +553,18 @@ function choose(block) {
 
   } else {
     busy = true;
-if (!cheats.infiniteLives) {
-  lives = Math.max(0, lives - 1);
-}
+
+    if (!cheats.infiniteLives) {
+      lives = Math.max(0, lives - 1);
+    }
+
     update();
     sound(200, .2);
 
     if (lives === 0) {
       gameOver = true;
+
+      stopTimer();
 
       board.querySelectorAll(".block").forEach(block => {
         block.disabled = true;
@@ -345,7 +584,9 @@ if (!cheats.infiniteLives) {
     actionTimer = setTimeout(() => {
       a.classList.remove("selected");
       b.classList.remove("selected");
+
       busy = false;
+
       showMessage("Eşleşmedi! 1 can kaybettin.");
     }, 600);
   }
@@ -355,14 +596,22 @@ function pauseGame() {
   if (gameOver || busy) return;
 
   paused = !paused;
+
+  if (paused) {
+    stopTimer();
+  } else if (timerEverStarted) {
+    startTimer();
+  }
+
   $("pauseBtn").textContent = paused ? "Devam Et" : "Durdur";
+
   showMessage(paused ? "Oyun duraklatıldı." : "Devam et!");
 }
 
 function persistSlots() {
   try {
     localStorage.setItem("colorGameSlots", JSON.stringify(slots));
-  } catch(e) {
+  } catch (e) {
     alert("Kayıt yapılamadı. Tarayıcı depolama alanını kontrol et.");
   }
 }
@@ -381,56 +630,75 @@ function renderSlots() {
     box.className = "slot";
 
     const title = document.createElement("div");
+
     title.textContent = data
       ? `Slot ${index + 1} — Level ${data.level}, Puan ${data.score}`
       : `Slot ${index + 1} — Boş`;
 
     box.appendChild(title);
 
+    const save = document.createElement("button");
 
-const save = document.createElement("button");
-save.textContent = data ? "Üzerine Kaydet" : "Kaydet";
+    save.textContent = data ? "Üzerine Kaydet" : "Kaydet";
 
-save.onclick = () => {
-  if (gameOver) {
-    showMessage("Oyun bitti! Kayıt yapamazsın. 🔒");
-    return;
-  }
+    save.onclick = () => {
+      if (gameOver) {
+        showMessage("Oyun bitti! Kayıt yapamazsın. 🔒");
+        return;
+      }
 
-  if (
-    slots[index] &&
-    !confirm("Bu slottaki eski kaydın üzerine yazılsın mı?")
-  ) return;
+      if (
+        slots[index] &&
+        !confirm("Bu slottaki eski kaydın üzerine yazılsın mı?")
+      ) return;
 
-  slots[index] = {
-    score,
-    level,
-    lives,
-    nextLife,
-    matched: [...board.children].map(b => b.classList.contains("matched")),
-    colors: [...board.children].map(b => b.dataset.color)
-  };
+      slots[index] = {
+        score,
+        level,
+        lives,
+        nextLife,
 
-  persistSlots();
-  renderSlots();
-};
+        elapsedTime: getElapsedTime(),
+        timerRunning,
+        timerEverStarted,
 
-box.appendChild(save);
+        matched: [...board.children].map(
+          b => b.classList.contains("matched")
+        ),
 
+        colors: [...board.children].map(
+          b => b.dataset.color
+        )
+      };
+
+      persistSlots();
+      renderSlots();
+
+      showMessage("Oyun kaydedildi! 💾");
+    };
+
+    box.appendChild(save);
 
     const load = document.createElement("button");
+
     load.textContent = "Yükle";
     load.disabled = !data;
     load.onclick = () => loadGame(index);
+
     box.appendChild(load);
 
     const del = document.createElement("button");
+
     del.textContent = "Kaydı Sil";
     del.disabled = !data;
 
     del.onclick = () => {
-      if (!confirm("Yalnızca Slot " + (index + 1) + " silinsin mi?")) return;
+      if (!confirm("Yalnızca Slot " + (index + 1) + " silinsin mi?")) {
+        return;
+      }
+
       slots[index] = null;
+
       persistSlots();
       renderSlots();
     };
@@ -442,16 +710,27 @@ box.appendChild(save);
 
 function loadGame(index) {
   const data = slots[index];
+
   if (!data) return;
 
   clearTimeout(actionTimer);
   clearTimeout(levelTimer);
   clearTimeout(messageTimer);
 
+  stopTimer();
+
   score = data.score;
   level = data.level;
   lives = data.lives;
   nextLife = data.nextLife;
+
+  elapsedTime = data.elapsedTime || 0;
+  timerStartedAt = null;
+  timerRunning = false;
+  timerEverStarted = data.timerEverStarted || elapsedTime > 0;
+
+  clearInterval(timerInterval);
+  timerInterval = null;
 
   paused = false;
   gameOver = false;
@@ -459,26 +738,40 @@ function loadGame(index) {
   busy = false;
 
   $("levelUp").style.display = "none";
+
   board.replaceChildren();
 
   data.colors.forEach((color, index) => {
     const block = document.createElement("button");
+
     block.className = "block";
     block.style.background = color;
     block.dataset.color = color;
+    block.setAttribute("aria-label", "Renk bloğu");
 
     if (data.matched[index]) {
       block.classList.add("matched");
     }
 
     block.onclick = () => choose(block);
+
     board.appendChild(block);
   });
 
   update();
+  updateTimerDisplay();
+
   $("pauseBtn").textContent = "Durdur";
+  $("timerToggle").textContent = "Devam Et";
+
   showMessage("Kayıt yüklendi!");
+
   $("saveMenu").style.display = "none";
+
+  // Daha önce başlatılmış kronometre kayıtlı süreden devam eder.
+  if (timerEverStarted && !gameOver) {
+    startTimer();
+  }
 }
 
 $("restartBtn").onclick = restart;
@@ -525,8 +818,8 @@ $("difficulty").onchange = () => {
 $("messageSeconds").onchange = () => {
   showMessage("Mesaj süresi: " + $("messageSeconds").value + " saniye");
 };
-// Oyun açılır açılmaz kutuları oluştur.
-  // ===== HİLE MENÜSÜ =====
+
+// HİLE MENÜSÜ
 
 const cheatMenu = document.createElement("div");
 
@@ -654,7 +947,6 @@ $("cheatAddScore").onclick = () => {
   }
 
   update();
-
   showMessage("+10000 puan! 💎");
 };
 
@@ -696,20 +988,31 @@ $("cheatClose").onclick = () => {
   cheatMenu.style.display = "none";
 };
 
-// ===== HİLE MENÜSÜ SONU =====
+// KRONOMETREYİ GÜNCELLE VE OYUNU BAŞLAT
+
+updateTimerDisplay();
 restart();
 </script>
 
 <div style="text-align:center;margin:30px;">
-<h2>Renk Eşleştirme APK İndir</h2>
-<p>Renk Eşleştirme oyununu Android telefonuna indir!</p>
-<a href="https://old.appsgeyser.com/widgetdownload.php?widget=Renk%20E%C5%9Fle%C5%9Ftirme_20319352"
-target="_blank"
-rel="noopener noreferrer"
-style="display:inline-block;padding:15px;background:#22aa55;color:white;border-radius:10px;text-decoration:none;">
-📱 APK İNDİR
-</a>
+  <h2>Renk Eşleştirme APK İndir</h2>
+  <p>Renk Eşleştirme oyununu Android telefonuna indir!</p>
+
+  <a
+    href="https://old.appsgeyser.com/widgetdownload.php?widget=Renk%20E%C5%9Fle%C5%9Ftirme_20319352"
+    target="_blank"
+    rel="noopener noreferrer"
+    style="
+      display:inline-block;
+      padding:15px;
+      background:#22aa55;
+      color:white;
+      border-radius:10px;
+      text-decoration:none;
+    "
+  >📱 APK İNDİR</a>
 </div>
 
 </body>
 </html>
+```
