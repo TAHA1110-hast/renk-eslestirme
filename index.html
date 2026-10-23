@@ -514,33 +514,6 @@ $("difficulty").onchange = () => {
 $("messageSeconds").onchange = () => {
   showMessage("Mesaj süresi: " + $("messageSeconds").value + " saniye");
 };
-
-// Gizli hile: Ctrl + Shift + 1 = 10 can
-document.addEventListener("keydown", function(e) {
-  if (e.ctrlKey && e.shiftKey && e.code === "Digit1") {
-    e.preventDefault();
-
-    lives = 10;
-    gameOver = false;
-    paused = false;
-    busy = false;
-    first = null;
-
-    clearTimeout(actionTimer);
-    clearTimeout(levelTimer);
-    $("levelUp").style.display = "none";
-
-    board.querySelectorAll(".block").forEach(block => {
-      block.disabled = false;
-      block.classList.remove("selected");
-    });
-
-    $("pauseBtn").textContent = "Durdur";
-    update();
-    showMessage("🔥 HİLE AKTİF! 10 CAN! ❤️");
-  }
-});
-
 // Oyun açılır açılmaz kutuları oluştur.
 restart();
 </script>
