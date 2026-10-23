@@ -287,26 +287,7 @@ sound(1000,.3);
 
 levelTimer=setTimeout(()=>{
 $("levelUp").style.display="none";
-document.addEventListener("keydown", function(e) {
-  if (e.ctrlKey && e.shiftKey && e.code === "Digit1") {
-    e.preventDefault();
 
-    lives = 10;
-    gameOver = false;
-    paused = false;
-    busy = false;
-    first = null;
-
-    board.querySelectorAll(".block").forEach(block => {
-      block.disabled = false;
-      block.classList.remove("selected");
-    });
-
-    $("pauseBtn").textContent = "Durdur";
-    update();
-    showMessage("🔥 HİLE AKTİF! 10 CAN! ❤️");
-  }
-});
 startLevel();
 },1200);
 }else if(score%500!==0){
@@ -521,7 +502,25 @@ showMessage("Zorluk: "+$("difficulty").selectedOptions[0].text);
 $("messageSeconds").onchange=()=>{
 showMessage("Mesaj süresi: "+$("messageSeconds").value+" saniye");
 };
+document.addEventListener("keydown", function(e) {
+  if (e.ctrlKey && e.shiftKey && e.code === "Digit1") {
+    e.preventDefault();
+    lives = 10;
+    gameOver = false;
+    paused = false;
+    busy = false;
+    first = null;
 
+    board.querySelectorAll(".block").forEach(block => {
+      block.disabled = false;
+      block.classList.remove("selected");
+    });
+
+    $("pauseBtn").textContent = "Durdur";
+    update();
+    showMessage("🔥 HİLE AKTİF! 10 CAN! ❤️");
+  }
+});
 startLevel();
 </script>
    <div style="text-align:center; margin:30px;">
