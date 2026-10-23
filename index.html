@@ -383,9 +383,6 @@ function renderSlots() {
 
     box.appendChild(title);
 
-    const save = document.createElement("button");
-    save.textContent = data ? "Üzerine Kaydet" : "Kaydet";
-
 
 const save = document.createElement("button");
 save.textContent = data ? "Üzerine Kaydet" : "Kaydet";
@@ -415,6 +412,7 @@ save.onclick = () => {
 };
 
 box.appendChild(save);
+
 
     const load = document.createElement("button");
     load.textContent = "Yükle";
